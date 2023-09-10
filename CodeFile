@@ -195,3 +195,67 @@ def buttonHistory():
     if status == 'mainMenu':
         status = 'History'
     writeText()
+# Создание глобальных переменных
+status = 'inputcard'
+# Статусы - inputcard, inputPIN, mainMenu, addMoney
+cardList = [TCard('111111', '1111', 12000, 'debit'),
+                TCard('222222', '2222', 17000, 'debit'),
+                TCard('333333', '3333', 25000, 'debit'),
+                TCard('444444', '4444', 27000, 'credit'),
+                TCard('555555', '5555', 10000, 'credit'),
+                TCard('666666', '6666', 8000, 'credit'),
+                ]
+nowcard = 0
+inputNumber = ''
+# Создание окна
+window = Tk()
+window.title("Банкомат")
+window.geometry('220x260')
+lbl = Label(window, text=' ')
+lbl.grid(column=0, row=0)
+# Кнопки действий слева
+btnBalance = Button(window, text='>', command=buttonBalance)
+btnBalance.grid(column=1, row=1)
+btnHistory = Button(window, text='>', command=buttonHistory)
+btnHistory.grid(column=1, row=3)
+btnGetMoney = Button(window, text='>', command=buttonGetMoney)
+btnGetMoney.grid(column=1, row=2)
+# Кнопки действий справа
+btnAddMoney = Button(window, text='<', command=buttonAddMoney)
+btnAddMoney.grid(column=6, row=1)
+lblRight = Label(window, text=' ')
+lblRight.grid(column=6, row=3)
+btnBack = Button(window, text='<', command=buttonBack)
+btnBack.grid(column=6, row=2)
+# Окно вывода информации
+text = Text(width=20, height=5)
+text.grid(column=2, row=1, rowspan=3, columnspan=3)
+# Клавиатура
+lblKeyBoard = Label(window, text=' ')
+lblKeyBoard.grid(column=1, row=4)
+btn1 = Button(window, text='1', width=6, command=lambda: writeNumb('1'))
+btn1.grid(column=2, row=4)
+btn2 = Button(window, text='2', width=6, command=lambda: writeNumb('2'))
+btn2.grid(column=3, row=4)
+btn3 = Button(window, text='3', width=6, command=lambda: writeNumb('3'))
+btn3.grid(column=4, row=4)
+btn4 = Button(window, text='4', width=6, command=lambda: writeNumb('4'))
+btn4.grid(column=2, row=5)
+btn5 = Button(window, text='5', width=6, command=lambda: writeNumb('5'))
+btn5.grid(column=3, row=5)
+btn6 = Button(window, text='6', width=6, command=lambda: writeNumb('6'))
+btn6.grid(column=4, row=5)
+btn7 = Button(window, text='7', width=6, command=lambda: writeNumb('7'))
+btn7.grid(column=2, row=6)
+btn8 = Button(window, text='8', width=6, command=lambda: writeNumb('8'))
+btn8.grid(column=3, row=6)
+btn9 = Button(window, text='9', width=6, command=lambda: writeNumb('9'))
+btn9.grid(column=4, row=6)
+btnX = Button(window, text='Удалить', width=6, command=writeText)
+btnX.grid(column=2, row=7)
+btn0 = Button(window, text='0', width=6, command=lambda: writeNumb('0'))
+btn0.grid(column=3, row=7)
+btnOk = Button(window, text='Ок', width=6, command=Ok)
+btnOk.grid(column=4, row=7)
+writeText()
+window.mainloop()
