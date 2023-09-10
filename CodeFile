@@ -1,1 +1,71 @@
+from tkinter import *
+from tkinter import messagebox
+
+
+class TCard:
+    def __init__(self, number, PIN, money, type):
+        self._number = number
+        self._PIN = PIN
+        self._money = money
+        self._type = type
+        self._block = False
+        self._checkBlock = 0
+        self._history = list()
+
+    def getNumber(self):
+        return self._number
+
+    def getPIN(self):
+        return self._PIN
+
+    def getBalance(self):
+        return self._money
+
+    def getType(self):
+        return self._type
+
+    def getCheckBlock(self):
+        return self._checkBlock
+
+    def getBlock(self):
+        return self._block
+
+    def getHistory(self):
+        return self._history
+
+    def checkNumber(self, number):
+        if self._number == number:
+            return True
+
+    def checkPIN(self, PIN):
+        if self._PIN == PIN:
+            return True
+        else:
+            self._checkBlock += 1
+            if self._checkBlock == 3:
+                self._block = True
+            return False
+
+    def addMoney(self, add):
+        self._money = self._money + float(add)
+        self._history.append('Зачислено ' + str(add))
+
+    def getMoney(self, get):
+        if self._type == 'debit':
+            if float(get) > self._money:
+                return 0
+            else:
+                self._money -= float(get)
+                self._history.append('Списано ' + str(get))
+                return -1
+        elif self._type == 'credit':
+            if float(get) <= self._money:
+                self._money -= float(get)
+                self._history.append('Списано ' + str(get))
+                return -1
+            else:
+                procent = abs(self._money - float(get)) * 0.05
+                self._money = self._money - float(get) - procent
+                self._history.append('Списано ' + str(get) + ' ' + str(procent))
+                return procent
 
