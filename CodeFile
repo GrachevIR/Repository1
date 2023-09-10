@@ -68,4 +68,130 @@ class TCard:
                 self._money = self._money - float(get) - procent
                 self._history.append('Списано ' + str(get) + ' ' + str(procent))
                 return procent
+# Функции
+# Вывод текста на экран
+def writeText():
+    global status, nowcard, text, inputNumber
+    inputNumber = ''
+    if status == 'inputcard':
+        text.delete(1.0, END)
+        text.insert(INSERT, '  Добро пожаловать' + '\n')
+        text.insert(INSERT, 'Вставьте пожалуйста карту: ')
+    elif status == 'inputPIN':
+        text.delete(1.0, END)
+        text.insert(INSERT, '\n')
+        text.insert(INSERT, 'Введите пароль: ')
+    elif status == 'mainMenu':
+        text.delete(1.0, END)
+        text.insert(INSERT, 'Баланс     Пополнить')
+        text.insert(INSERT, '\n' * 2)
+        text.insert(INSERT, 'Снять         Отмена')
+        text.insert(INSERT, '\n' * 2)
+        text.insert(INSERT, 'История')
+    elif status == 'addMoney':
+        text.delete(1.0, END)
+        text.insert(INSERT, 'Введите сумму, которую желаете положить на счёт ')
+    elif status == 'getMoney':
+        text.delete(1.0, END)
+        text.insert(INSERT, 'Сумма снятия ')
+    elif status == 'History':
+        text.delete(1.0, END)
+        if len(cardList[nowcard].getHistory()) != 0:
+            for elem in cardList[nowcard].getHistory():
+                text.insert(INSERT, elem + '\n')
+            text.insert(INSERT, 'В меню - кнопка ОК')
 
+        else:
+            text.insert(INSERT, 'История пуста' + '\n')
+            text.insert(INSERT, 'В меню - кнопка ОК')
+
+# Ввод числа и вывод его на экран
+def writeNumb(numb):
+    global status, text, inputNumber
+    if status == 'inputPIN':
+        text.insert(INSERT, '*')
+    else:
+        text.insert(INSERT, numb)
+    inputNumber += numb
+
+# Обработка нажатия кнопки ОК
+def Ok():
+    global status, nowcard, inputNumber, cardList
+    # Действие при вводе карты
+    if status == 'inputcard':
+        check = 0
+        for i in range(len(cardList)):
+            if cardList[i].checkNumber(inputNumber):
+                nowcard = i
+                status = 'inputPIN'
+            else:
+                check += 1
+        if check == len(cardList):
+            messagebox.showinfo('Ошибка', 'Номер карты введён некорректно. Повторите попытку')
+    # Действие при вводе пароля
+    elif status == 'inputPIN':
+        if not cardList[nowcard].getBlock():
+            if cardList[nowcard].checkPIN(inputNumber):
+                status = 'mainMenu'
+            else:
+                messagebox.showinfo('Ошибка', 'PIN-код введён неверно. Осталось попыток ' + str(
+                    3 - cardList[nowcard].getCheckBlock()))
+        else:
+            messagebox.showinfo('Ошибка', 'Ваша карта заблокирована')
+            status = 'inputcard'
+    # Действия при пополнении счёта
+    elif status == 'addMoney':
+        cardList[nowcard].addMoney(inputNumber)
+        messagebox.showinfo('Успешно', 'Операция выполнена успешно')
+        status = 'mainMenu'
+    # Действия при снятии со счёта
+    elif status == 'getMoney':
+        operstat = cardList[nowcard].getMoney(inputNumber)
+        if operstat == 0:
+            messagebox.showinfo('Ошибка', 'Операция не может быть выполнена. На счету недостаточно средств')
+            status = 'mainMenu'
+        elif operstat == -1:
+            messagebox.showinfo('Успешно', 'Операция выполнена успешно')
+            status = 'mainMenu'
+        else:
+            messagebox.showinfo('Успешно', 'Операция выполнена успешно. Но из-за отрицательного баланса снят дополнительный '
+                                'процент в размере - ' + str(operstat))
+            status = 'mainMenu'
+    elif status == 'History':
+        status = 'mainMenu'
+    writeText()
+
+# Кнопка слева сверху
+def buttonBalance():
+    global nowcard, cardList, status
+    if status == 'mainMenu':
+        messagebox.showinfo('Баланс' , 'Баланс на карте ' + str(cardList[nowcard].getBalance()) + '. Тип карты - ' + str(
+            cardList[nowcard].getType()))
+
+# Кнопка справа сверху
+def buttonAddMoney():
+    global status
+    if status == 'mainMenu':
+        status = 'addMoney'
+    writeText()
+
+# Кнопка справа посередине
+def buttonBack():
+    global status
+    if status == 'mainMenu':
+        status = 'inputcard'
+    writeText()
+
+# Кнопка слева посередине
+def buttonGetMoney():
+    global status
+    if status == 'mainMenu':
+        status = 'getMoney'
+    writeText()
+
+# Кнопка истории
+def buttonHistory():
+    global status
+    if status == 'mainMenu':
+        status = 'History'
+    writeText()
